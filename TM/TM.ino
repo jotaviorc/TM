@@ -16,7 +16,7 @@
 #define INITSTATE 40
 #define ENDSTATE  51
 
-int inputTape[STOPTAPE - STARTTAPE];
+int inputTape[STOPTAPE - STARTTAPE + 1];
 int positionTape = STARTPOS;
 int state = INITSTATE;
 
