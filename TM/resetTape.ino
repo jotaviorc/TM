@@ -19,4 +19,10 @@ void resetSystem(void)
   }
   digitalWrite(INITSTATE, HIGH);
   state = INITSTATE;
+  if (Serial.available()) serialData();
+}
+
+void serialData()
+{
+  Serial.println("TESTE");
 }
