@@ -12,7 +12,7 @@ int flagINIT = 0;
 
 void stateSlectFunction()
 {
-  int delayAuxExe = 100;
+  int delayAuxExe = 300;
   int select = 0;
   delay(delayAuxExe);
   do 
@@ -104,7 +104,9 @@ int stateQ1(void)
 int stateQ2(void)
 {
   if (positionTape == STARTPOS) {
-    if (!flagINIT) {
+    if (!flagINIT && inputTape[positionTape - STARTPOS] == 0) {
+      digitalWrite(positionTape, LOW);
+      positionTape--;
       flagINIT = 1;
     }
     else {
