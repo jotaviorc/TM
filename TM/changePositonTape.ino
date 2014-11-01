@@ -11,7 +11,8 @@ void configInputTape(void)
 {
   int aux = positionTape - STARTPOS;
   inputTape[aux] = digitalRead(VALUE);
-  digitalWrite(aux + STARTTAPE, inputTape[aux]);
+  debugTape();
+  digitalWrite(STARTTAPE + aux, inputTape[aux]);
 }
 
 void changeState(int aux)
@@ -26,4 +27,9 @@ void changeState(int aux)
 void writeTape(void)
 {
   digitalWrite((STARTTAPE + (positionTape - STARTPOS)), inputTape[positionTape - STARTPOS]);
+}
+
+void debugTape(void)
+{
+  for (int i; i <= 11; i ++)  Serial.print(inputTape[i]);
 }
