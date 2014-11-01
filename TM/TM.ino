@@ -82,13 +82,14 @@ void loop()
     if (TEST) changeState(1);
     else configInputTape();
     delay(auxTemp);
-
   }
   if (digitalRead(PLAY) == HIGH){
     Serial.println("PLAY");
     if (TEST) changeState(-1);
-    else ;// PLAY
-    delay(auxTemp);
-    
+    else {
+      startPlay();
+      stateSlectFunction();
+    }
+    delay(auxTemp);    
   }
 }
