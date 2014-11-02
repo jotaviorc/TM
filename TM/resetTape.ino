@@ -24,5 +24,23 @@ void resetSystem(void)
 
 void serialData()
 {
-  Serial.println("TESTE");
+  for (int auxSerial = 0; auxSerial <= 11; auxSerial++)
+  {
+    int serialData = Serial.read() - '0';
+    if (serialData == 0 || serialData == 1) inputTape[auxSerial] = serialData;
+    else inputTape[auxSerial] = 0;
+  }
+  while (Serial.available()) Serial.read();
+  Serial.print("NEW TAPE:");
+  debugTape();
+  loadTape();
+  Serial.println();
+}
+
+void loadTape(void)
+{
+  for (int aux = 0; aux <= 11; aux++)
+  {
+    digitalWrite(STARTTAPE + aux, inputTape[aux]);
+  }
 }
