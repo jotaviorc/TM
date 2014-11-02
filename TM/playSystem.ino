@@ -9,6 +9,7 @@ void startPlay(void)
 }
 
 int flagINIT = 0;
+int flagEND = 0;
 
 void stateSlectFunction()
 {
@@ -63,12 +64,14 @@ void stateSlectFunction()
         select = stateQ11();
         break;
     }
-    digitalWrite(INITSTATE + select, HIGH);
+    if (select == 12 ) digitalWrite(INITSTATE + select - 1 , HIGH);
+    else digitalWrite(INITSTATE + select, HIGH);
     delay(delayAuxExe);
   }
   while (select != 12);
   Serial.println("EXECTION DONE");
   flagINIT = 0;
+  flagEND = 0;
 }
 
 int stateQ0(void)
@@ -85,9 +88,20 @@ int stateQ0(void)
 
 int stateQ1(void)
 {
-  if (positionTape == STOPPOS) {
-    changePositonTape(-1);
-    return 4;
+  if (positionTape == STOPPOS){
+    if (!flagEND && inputTape[positionTape - STARTPOS] == 1)
+    {
+      inputTape[positionTape - STARTPOS] = 0;
+      writeTape();
+      changePositonTape(-1);
+      flagEND = 1;
+      return 2;
+    }
+    else {
+      digitalWrite(positionTape, LOW);
+      positionTape++;
+      return 4;
+    }
   }
   if (inputTape[positionTape - STARTPOS]) {
     inputTape[positionTape - STARTPOS] = 0;
