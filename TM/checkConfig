@@ -1,0 +1,71 @@
+#define BOARDMODEL    54  // Quantidade de pinos Digitais do Sistema - No caso do Arduino MEGA são 54 Entradas Digitais
+
+// --- Verifica Configuração do Sistema --- //
+
+void checkConfig(void)
+{
+  if (validateBoard()) systemErrorMessage();
+  if (compareEndBegin(STARTTAPE, STOPTAPE) || compareEndBegin(STARTPOS, STOPPOS) || compareEndBegin(INITSTATE, ENDSTATE)) systemErrorMessage();
+  if (comparePosWithTape()) systemErrorMessage();
+  if (compareOverlap()) systemErrorMessage();
+  Serial.println("SYSTEM CONFIG OK!");
+}
+
+void systemErrorMessage(void)
+{
+  Serial.println("SYSTEM CONFIG ERROR!");
+  Serial.println("CHECK CONFIG DESFINE!");
+  Serial.println("SYSTEM HALT!");
+  while(1) delay(10000);
+}
+
+int validateBoard(void) // Verifica se algum pino escolhido é maior que BOARDMODEL
+{
+  if (RESET > BOARDMODEL || PLAY > BOARDMODEL || SET  > BOARDMODEL || POSP  > BOARDMODEL || POSM  > BOARDMODEL) return -1;
+  if (STARTPOS > BOARDMODEL || STOPPOS > BOARDMODEL || STARTTAPE > BOARDMODEL || STOPTAPE  > BOARDMODEL || INITSTATE  > BOARDMODEL || ENDSTATE > BOARDMODEL) return -1;
+  return 0;
+}
+
+int compareEndBegin(int beginTest, int endTest) // Verifica se o bloco de pinos escolhido é válido 
+{
+  if (endTest < beginTest) return -1;
+  return 0;
+}
+
+int comparePosWithTape(void) // Compara o tamanho da FITA com o tamanho de POSIÇÕES
+{
+  if ((STOPPOS - STARTPOS) != (STOPTAPE - STARTTAPE)) return -1;
+  return 0;
+}
+
+int compareOverlap(void) // Verifica se não foram configurados pinos respetidos
+{
+  int checkConfigArray[BOARDMODEL] = {};
+  checkConfigArray[0] = 1;
+  checkConfigArray[1] = 1;
+  
+  compareOverlapAuxFunction(RESET, RESET, checkConfigArray);
+  compareOverlapAuxFunction(PLAY, PLAY, checkConfigArray);
+  compareOverlapAuxFunction(SET, SET, checkConfigArray);
+  compareOverlapAuxFunction(POSP, POSP, checkConfigArray);
+  compareOverlapAuxFunction(POSM, POSM, checkConfigArray); 
+  compareOverlapAuxFunction(STARTPOS, STOPPOS, checkConfigArray);
+  compareOverlapAuxFunction(STARTTAPE, STOPTAPE, checkConfigArray);
+  compareOverlapAuxFunction(INITSTATE, ENDSTATE, checkConfigArray);
+
+  if (validateConfigAux(checkConfigArray)) return -1;
+  return 0;
+}
+
+void compareOverlapAuxFunction(int auxStart, int auxStop, int *auxArray)
+{
+  for (int count = auxStart; count <= auxStop ; count++) auxArray[count] = auxArray[count] == 0 ?  1 : -1;
+}
+
+int validateConfigAux(int *auxArray)
+{
+  for (int count = 0; count < BOARDMODEL; count++) if (auxArray[count] == -1) return -1;
+  return 0;
+}
+
+// --- Verifica Configuração do Sistema --- //
