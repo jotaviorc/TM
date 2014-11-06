@@ -1,3 +1,5 @@
+// --- Reinicia o Sistema, caso exista DADOS na Serial carrega para a FITA --- //
+
 void resetSystem(void)
 {
   // Zera Fita
@@ -19,28 +21,29 @@ void resetSystem(void)
   }
   digitalWrite(INITSTATE, HIGH);
   state = INITSTATE;
+  
+  // Verifica DADOS da Serial
   if (Serial.available()) serialData();
 }
 
 void serialData()
 {
-  for (int auxSerial = 0; auxSerial <= 11; auxSerial++)
+  // Caso encontre DADOS na SERIAL, verifica quantos vezes o "1" foi pressionado, até atingir o tamanho da FITA. Atribui "0" para qualquer outro dado na Serial e descarta o excesso.
+  for (int auxSerial = 0; auxSerial <= STOPTAPE; auxSerial++)
   {
     int serialData = Serial.read() - '0';
-    if (serialData == 0 || serialData == 1) inputTape[auxSerial] = serialData;
+    if (serialData == 1) inputTape[auxSerial] = serialData;
     else inputTape[auxSerial] = 0;
-  }
+  }  
   while (Serial.available()) Serial.read();
   Serial.print("NEW TAPE:");
   debugTape();
-  loadTape();
   Serial.println();
+  loadTape();
 }
 
+// --- Carrega os DADOS lidos na SERIAL --- //
 void loadTape(void)
 {
-  for (int aux = 0; aux <= 11; aux++)
-  {
-    digitalWrite(STARTTAPE + aux, inputTape[aux]);
-  }
+  for (int aux = 0; aux <= STOPTAPE - STARTTAPE;  aux++) digitalWrite(STARTTAPE + aux, inputTape[aux]);
 }
